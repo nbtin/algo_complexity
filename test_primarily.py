@@ -106,8 +106,9 @@ def miller_rabin(n, k=5):
 
 if __name__ == '__main__':
     N = int(input("Input a number: "))
-    print("PRIME") if miller_rabin(N) else print("COMPOSITE")
-    print("PRIME") if naive_2(N) else print("COMPOSITE")
-    print("PRIME") if fermat_little(N) else print("COMPOSITE")
-    # print("PRIME") if naive_1(N) else print("COMPOSITE") # CHAY CHAM VAI LON LUON :))
+    print("PRIME") if miller_rabin(N)[0] else print("COMPOSITE")
+    print("PRIME") if naive_2(N)[0] else print("COMPOSITE")
+    print("PRIME") if fermat_little(N)[0] else print("COMPOSITE")
+    # print("PRIME") if naive_1(N) else 
+    # print("COMPOSITE") # CHAY CHAM VAI LON LUON :))
     
