@@ -1,6 +1,10 @@
 from utils import gcd
 from test_primarily import naive_2, miller_rabin
 from utils import *
+
+## Thư viện dùng cho việc kiểm tra lại hàm
+from sympy.ntheory import jacobi_symbol 
+
 def Jacobi(a: int, n: int):  
     """
     Nguồn: https://en.wikipedia.org/wiki/Jacobi_symbol#Implementation_in_C++
@@ -79,8 +83,26 @@ def find_UVQ(n: int, P: int, Q: int, k: int):
     U = 1
     V = P
     Qk = Q
+    b = 0
+    while inc(comparisons) and (1<<b) < k:
+        b += 1
+    while b > 1:
+        U = (U*V) % n
+        V = (V*V - 2*Qk) % n
+        Qk = (Qk * Qk) %n 
+        b -= 1
+        if inc(comparisons) and ((k >> (b - 1)) & 1):
+            U, V = U*P + V, V*P + U*D
+            if inc(comparisons) and (U & 1):
+                U += n
+            if inc(comparisons) and (V & 1):
+                V += n
+            U, V = U >> 1, V >> 1
+            Qk *= Q
+        Qk %= n
+    return (U % n, V % n, Qk), comparisons[0]
+
     
-    pass
 
 ##TODO nhớ xóa assert sau khi chạy
 
@@ -100,7 +122,8 @@ def Strong_Lucas_propable_prime(n):
     (D, P, Q), comp = find_DPQ(n)
     comparisons[0] += comp
     if inc(comparisons) and D == 0:
-        return False, comparisons[0]    
+        return False, comparisons[0]   
+     
     k = n + 1
     s = 0
     while inc(comparisons) and not (k & 1):
@@ -109,13 +132,19 @@ def Strong_Lucas_propable_prime(n):
     
     (U, V, Qk), comp = find_UVQ(n, P, Q, k)
     comparisons[0] += comp
+    
+    if (inc(comparisons) and (U == 0)) or (inc(comparisons) and (V == 0)):
+        return True
+    for r in range(1, s):
+        V = (V*V - 2*Qk) % n
+        if inc(comparisons) and (V == 0):
+            return True
+        Qk, comp = pow_(Qk, 2, n)
+        comparisons[0] += comp
+    return False, comparisons[0]
+    
 
-    pass
 
-
-from  sympy.ntheory import jacobi_symbol
-
-Strong_Lucas_propable_prime(19)
 
 ## Các thông số được lấy từ github của sympy về Baillie-PSW test
 _LIMIT = 10000 # cái ngưỡng để kiểm tra số nguyên tố bằng thuật toán Naive 
@@ -132,14 +161,17 @@ def Baillie_PSW_Test(n):
         comparisons[0] += comp
         return naive2, comparisons[0]
     
-    for i in LOW_PRIMES:
+    for i in LOW_PRIMES: # kiểm tra có ước nguyên tố là các nguyên tố nhỏ không
         if inc(comparisons) and n % i == 0:
             return False, comparisons[0]
-        
+    
     ## Sau khi kiểm tra xong thì chúng ta sẽ thực hiện 2 test chính
     # Miller - Rabin với base 2
     
     # Lucas strong Propable prime test
+    result, comp = Strong_Lucas_propable_prime
+    comparisons[0] += comp
+    return result, comparisons[0]
 
                     
 
