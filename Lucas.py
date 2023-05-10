@@ -1,41 +1,50 @@
 from utils import gcd
 from test_primarily import naive_2, miller_rabin
-def Jacobi(a: int, n: int):  # Nguồn: https://en.wikipedia.org/wiki/Jacobi_symbol#Implementation_in_C++
+from utils import *
+def Jacobi(a: int, n: int):  
+    """
+    Nguồn: https://en.wikipedia.org/wiki/Jacobi_symbol#Implementation_in_C++
+    """
+    comparisons = [0]
     assert (n > 0) and (n & 1)
     a = a % n
     t = 1
     r = None  # Khởi tạo r
-    while a:  # a != 0
-        while not (a & 1):  # a % 2 == 0
+    while inc(comparisons) and a:  # a != 0
+        while inc(comparisons) and not (a & 1):  # a % 2 == 0
             a >>= 1
             r = n & 7  # n % (8) == n & 7
-            if r in [3, 5]:
+            if inc(comparisons) and r in [3, 5]:
                 t = -t
         r = n
         n = a
         a = r
-        if (a & 3) == 3 and (n & 3) == 3:
+        if inc(comparisons) and (a & 3) == 3 and inc(comparisons) and (n & 3) == 3:
             t = -t
         a = a % n
-    if (n == 1):
-        return t
-    return 0
+    if inc(comparisons) and (n == 1):
+        return t, comparisons[0]
+    return 0, comparisons[0]
 
 
 def find_DPQ(n):
+    comparisons = [0]
     D = 5
-    while True:
-        g = gcd(abs(d), n)
-        if 1 < g and g < n:
-            return (0, 0, 0)
-        if Jacobi(d, n) != -1:
+    while inc(comparisons) and True:
+        g, comp = gcd(abs(d), n)
+        comparisons[0] += comp
+        if inc(comparisons) and 1 < g and inc(comparisons) and g < n:
+            return (0, 0, 0), comparisons[0]
+        jacobi, comp = Jacobi(d, n)
+        comparisons[0] += comp
+        if inc(comparisons) and jacobi != -1:
             d = -(d + (d // (abs(d))) * 2)
         break
-    assert Jacobi(d, n) == jacobi_symbol(d, n)
+    assert Jacobi(d, n)[0] == jacobi_symbol(d, n)
     assert (1 - d) % 4 == 0 
     P = 1
     Q = (1 - D) // 4
-    return (D, P, Q)
+    return (D, P, Q), comparisons[0]
 
 
 def Check_Perfect_Sqr(n: int):
@@ -47,24 +56,26 @@ def Check_Perfect_Sqr(n: int):
     Returns:
         Boolean: True nếu nó là số chính phương
     """
+    comparisons = [0]
     low = 1
     high = x
-    while (low <= high):
+    while inc(comparisons) and (low <= high):
         mid = (low + high) >> 1
         number = mid * mid
-        if number < n:
+        if inc(comparisons) and number < n:
             low = low + 1  
-        elif number > n:
+        elif inc(comparisons) and number > n:
             high = mid - 1
         else:
-            return True
-    return False
+            return True, comparisons[0]
+    return False, comparisons[0]
 
 
 def find_UVQ(n: int, P: int, Q: int, k: int):
+    comparisons = [0]
     D = P*P - 4*Q
-    if k == 0:
-        return (0, 2, Q)
+    if inc(comparisons) and k == 0:
+        return (0, 2, Q), comparisons[0]
     U = 1
     V = P
     Qk = Q
@@ -74,26 +85,31 @@ def find_UVQ(n: int, P: int, Q: int, k: int):
 ##TODO nhớ xóa assert sau khi chạy
 
 def Strong_Lucas_propable_prime(n):
+    comparisons = [0]
+
     ## Xử lý tiền tố các trường hợp cơ bản
-    if n == 2:
-        return True
-    if n < 2 or (n & 1) == 0:
-        return False
-    if Check_Perfect_Sqr(n):
-        return False
+    if inc(comparisons) and n == 2:
+        return True, comparisons[0]
+    if inc(comparisons) and n < 2 or (n & 1) == 0:
+        return False, comparisons[0]
+    checker, comp = Check_Perfect_Sqr(n)
+    comparisons[0] += comp
+    if inc(comparisons) and checker:
+        return False, comparisons[0]
     
-    D, P, Q = find_DPQ(n)
-    if D == 0:
-        return False    
+    (D, P, Q), comp = find_DPQ(n)
+    comparisons[0] += comp
+    if inc(comparisons) and D == 0:
+        return False, comparisons[0]    
     k = n + 1
     s = 0
-    while not (k & 1):
+    while inc(comparisons) and not (k & 1):
         k >>= 1
         s += 1
     
-    U, V, Qk = find_UVQ(n, P, Q, k)
-    
-    
+    (U, V, Qk), comp = find_UVQ(n, P, Q, k)
+    comparisons[0] += comp
+
     pass
 
 
@@ -106,14 +122,19 @@ _LIMIT = 10000 # cái ngưỡng để kiểm tra số nguyên tố bằng thuậ
 LOW_PRIMES = [5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97]
 
 def Baillie_PSW_Test(n):
-    if n < 2 or not (n & 1): return False
-    if n == 2: return True
-    if n <= _LIMIT:
-        return naive_2(n)
+    comparisons = [0]
+    if (inc(comparisons) and n < 2) or (inc(comparisons) and not (n & 1)): 
+        return False,; comparisons[0]
+    if inc(comparisons) and n == 2: 
+        return True,; comparisons[0]
+    if inc(comparisons) and n <= _LIMIT:
+        naive2, comp = naive_2(n)
+        comparisons[0] += comp
+        return naive2, comparisons[0]
     
     for i in LOW_PRIMES:
-        if n % i == 0:
-            return False
+        if inc(comparisons) and n % i == 0:
+            return False, comparisons[0]
         
     ## Sau khi kiểm tra xong thì chúng ta sẽ thực hiện 2 test chính
     # Miller - Rabin với base 2

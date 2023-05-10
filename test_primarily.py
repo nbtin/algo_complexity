@@ -49,6 +49,22 @@ def fermat_little(n):
         return True, comparisons[0]
 
 
+def miller_rabin_check_base2(n, d, r):
+    comparisons = [0]
+    a = 2
+    x, comp = pow_(a, d, n)
+    comparisons[0] += comp
+    if (inc(comparisons) and x == 1) or (inc(comparisons) and x == n-1):
+        return True, comparisons[0] # -> it's probably prime
+    
+    x, comp = pow_(x, 2, n)
+    comparisons[0] += comp
+    if inc(comparisons) and x == n-1:
+        return True, comparisons[0] # -> it's probably prime
+    else:
+        return False, comparisons[0]
+
+
 def miller_rabin_check(n, d, r):
     comparisons = [0]
     a = random.randint(2, n-2)
