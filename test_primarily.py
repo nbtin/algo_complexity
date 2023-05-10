@@ -49,25 +49,17 @@ def fermat_little(n):
         return True, comparisons[0]
 
 
-def miller_rabin_check_base2(n, d, r):
+
+def miller_rabin_check(n, d, r, base2=True):
     comparisons = [0]
-    a = 2
-    x, comp = pow_(a, d, n)
-    comparisons[0] += comp
-    if (inc(comparisons) and x == 1) or (inc(comparisons) and x == n-1):
-        return True, comparisons[0] # -> it's probably prime
-    
-    x, comp = pow_(x, 2, n)
-    comparisons[0] += comp
-    if inc(comparisons) and x == n-1:
-        return True, comparisons[0] # -> it's probably prime
+    a = None
+    # For ease of multi-purposes, we're flexible in initializing a by random or base 2
+    # So, it's no need to count up the comparisons here.
+    if base2:
+        a = 2
     else:
-        return False, comparisons[0]
+        a = random.randint(2, n-2)
 
-
-def miller_rabin_check(n, d, r):
-    comparisons = [0]
-    a = random.randint(2, n-2)
     x, comp = pow_(a, d, n)
     comparisons[0] += comp
     if (inc(comparisons) and x == 1) or (inc(comparisons) and x == n-1):
@@ -82,7 +74,8 @@ def miller_rabin_check(n, d, r):
         inc(comparisons)
         return False, comparisons[0] # if it never equals to n - 1, it's a composite
 
-def miller_rabin(n, k=5):
+
+def miller_rabin(n, k=5, base2=False):
     """
     Miller-Rabin primality test.
 
@@ -110,7 +103,7 @@ def miller_rabin(n, k=5):
     # Run Miller-Rabin k times
     for _ in range(k):
         inc(comparisons)        
-        checker, comp = miller_rabin_check(n, d, r)
+        checker, comp = miller_rabin_check(n, d, r, base2)
         comparisons[0] += comp
         if inc(comparisons) and checker:
             continue
@@ -118,6 +111,7 @@ def miller_rabin(n, k=5):
             return False, comparisons[0]
         
     return True, comparisons[0]
+
 
 
 if __name__ == '__main__':
