@@ -35,17 +35,17 @@ def find_DPQ(n):
     comparisons = [0]
     D = 5
     while inc(comparisons) and True:
-        g, comp = gcd(abs(d), n)
+        g, comp = gcd(abs(D), n)
         comparisons[0] += comp
         if inc(comparisons) and 1 < g and inc(comparisons) and g < n:
             return (0, 0, 0), comparisons[0]
-        jacobi, comp = Jacobi(d, n)
+        jacobi, comp = Jacobi(D, n)
         comparisons[0] += comp
         if inc(comparisons) and jacobi != -1:
-            d = -(d + (d // (abs(d))) * 2)
+            D = -(D + (D // (abs(D))) * 2)
         break
-    assert Jacobi(d, n)[0] == jacobi_symbol(d, n)
-    assert (1 - d) % 4 == 0 
+    assert Jacobi(D, n)[0] == jacobi_symbol(D, n)
+    assert (1 - D) % 4 == 0 
     P = 1
     Q = (1 - D) // 4
     return (D, P, Q), comparisons[0]
@@ -62,7 +62,7 @@ def Check_Perfect_Sqr(n: int):
     """
     comparisons = [0]
     low = 1
-    high = x
+    high = n
     while inc(comparisons) and (low <= high):
         mid = (low + high) >> 1
         number = mid * mid
@@ -134,13 +134,15 @@ def Strong_Lucas_propable_prime(n):
     comparisons[0] += comp
     
     if (inc(comparisons) and (U == 0)) or (inc(comparisons) and (V == 0)):
-        return True
+        return True, comparisons[0]
+    
     for r in range(1, s):
         V = (V*V - 2*Qk) % n
         if inc(comparisons) and (V == 0):
-            return True
+            return True, comparisons[0]
         Qk, comp = pow_(Qk, 2, n)
         comparisons[0] += comp
+
     return False, comparisons[0]
     
 
@@ -152,10 +154,13 @@ LOW_PRIMES = [5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97
 
 def Baillie_PSW_Test(n):
     comparisons = [0]
+    
     if (inc(comparisons) and n < 2) or (inc(comparisons) and not (n & 1)): 
-        return False,; comparisons[0]
+        return False, comparisons[0]
+    
     if inc(comparisons) and n == 2: 
-        return True,; comparisons[0]
+        return True, comparisons[0]
+    
     if inc(comparisons) and n <= _LIMIT:
         naive2, comp = naive_2(n)
         comparisons[0] += comp
@@ -168,8 +173,13 @@ def Baillie_PSW_Test(n):
     ## Sau khi kiểm tra xong thì chúng ta sẽ thực hiện 2 test chính
     # Miller - Rabin với base 2
     
+    result, comp = miller_rabin(n, 1, True)
+    comparisons[0] += comp
+    if inc(comparisons) and not result:
+        return False, comparisons[0]
+    
     # Lucas strong Propable prime test
-    result, comp = Strong_Lucas_propable_prime
+    result, comp = Strong_Lucas_propable_prime(n)
     comparisons[0] += comp
     return result, comparisons[0]
 
