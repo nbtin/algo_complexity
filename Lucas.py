@@ -18,7 +18,7 @@ def Jacobi(a: int, n: int):
         while inc(comparisons) and not (a & 1):  # a % 2 == 0
             a >>= 1
             r = n & 7  # n % (8) == n & 7
-            if inc(comparisons) and r in [3, 5]:
+            if inc(comparisons) and (r in [3, 5]):
                 t = -t
         r = n
         n = a
@@ -112,7 +112,7 @@ def Strong_Lucas_propable_prime(n):
     ## Xử lý tiền tố các trường hợp cơ bản
     if inc(comparisons) and n == 2:
         return True, comparisons[0]
-    if inc(comparisons) and n < 2 or (n & 1) == 0:
+    if inc(comparisons) and (n < 2 or (n & 1) == 0):
         return False, comparisons[0]
     checker, comp = Check_Perfect_Sqr(n)
     comparisons[0] += comp
@@ -154,35 +154,32 @@ LOW_PRIMES = [5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97
 
 def Baillie_PSW_Test(n):
     comparisons = [0]
+    if (inc(comparisons)) and (n == 2):
+        return True, comparisons[0]
     
     if (inc(comparisons) and n < 2) or (inc(comparisons) and not (n & 1)): 
         return False, comparisons[0]
-    
-    if inc(comparisons) and n == 2: 
-        return True, comparisons[0]
-    
-    if inc(comparisons) and n <= _LIMIT:
+
+    if (inc(comparisons)) and (n <= _LIMIT):
         naive2, comp = naive_2(n)
         comparisons[0] += comp
         return naive2, comparisons[0]
-    
-    for i in LOW_PRIMES: # kiểm tra có ước nguyên tố là các nguyên tố nhỏ không
-        if inc(comparisons) and n % i == 0:
+
+    for i in LOW_PRIMES:  # kiểm tra có ước nguyên tố là các nguyên tố nhỏ không
+        if (inc(comparisons)) and (n % i == 0):
             return False, comparisons[0]
-    
+
     ## Sau khi kiểm tra xong thì chúng ta sẽ thực hiện 2 test chính
     # Miller - Rabin với base 2
-    
+
     result, comp = miller_rabin(n, 1, True)
     comparisons[0] += comp
-    if inc(comparisons) and not result:
+    if (inc(comparisons)) and (not result):
         return False, comparisons[0]
+
     
     # Lucas strong Propable prime test
     result, comp = Strong_Lucas_propable_prime(n)
     comparisons[0] += comp
     return result, comparisons[0]
-
-                    
-
 
