@@ -64,15 +64,14 @@ def miller_rabin_check(n, d, r, base2=False):
     comparisons[0] += comp
     if (inc(comparisons) and x == 1) or (inc(comparisons) and x == n-1):
         return True, comparisons[0] # -> it's probably prime
-    for _ in range(r):
+    for _ in range(1, r):
         inc(comparisons)
         x, comp = pow_(x, 2, n)
         comparisons[0] += comp
         if inc(comparisons) and x == n-1:
-            return True, comparisons[0] # -> it's probably prime
-    else:
-        inc(comparisons)
-        return False, comparisons[0] # if it never equals to n - 1, it's a composite
+            return True, comparisons[0] # -> it's probably prime    
+    inc(comparisons)
+    return False, comparisons[0] # if it never equals to n - 1, it's a composite
 
 
 def miller_rabin(n, k=5, base2=False):

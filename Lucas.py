@@ -41,9 +41,14 @@ def find_DPQ(n):
             return (0, 0, 0), comparisons[0]
         jacobi, comp = Jacobi(D, n)
         comparisons[0] += comp
-        if inc(comparisons) and jacobi != -1:
-            D = -(D + (D // (abs(D))) * 2)
-        break
+        if inc(comparisons) and jacobi == -1:
+            break
+        
+        if inc(comparisons) and D > 0:
+            D = -D - 2
+        else:
+            D = -D + 2
+            
     assert Jacobi(D, n)[0] == jacobi_symbol(D, n)
     assert (1 - D) % 4 == 0 
     P = 1
@@ -84,8 +89,11 @@ def find_UVQ(n: int, P: int, Q: int, k: int):
     V = P
     Qk = Q
     b = 0
-    while inc(comparisons) and (1<<b) < k:
+    temp = k
+    while inc(comparisons) and temp:
+        temp >>= 1
         b += 1
+    
     while b > 1:
         U = (U*V) % n
         V = (V*V - 2*Qk) % n
@@ -183,3 +191,4 @@ def Baillie_PSW_Test(n):
     comparisons[0] += comp
     return result, comparisons[0]
 
+print(Baillie_PSW_Test(67601)[0])
