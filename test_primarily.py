@@ -64,7 +64,7 @@ def miller_rabin_check(n, d, r, base2=False):
     comparisons[0] += comp
     if (inc(comparisons) and x == 1) or (inc(comparisons) and x == n-1):
         return True, comparisons[0] # -> it's probably prime
-    for _ in range(0, r + 1):
+    for _ in range(0, r):
         inc(comparisons)
         x, comp = pow_(x, 2, n)
         comparisons[0] += comp
