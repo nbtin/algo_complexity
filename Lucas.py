@@ -10,7 +10,11 @@ def Jacobi(a: int, n: int):
     Nguồn: https://en.wikipedia.org/wiki/Jacobi_symbol#Implementation_in_C++
     """
     comparisons = [0]
-    assert (n > 0) and (n & 1)
+    # Độ phức của thuật toán này là O(log(max(a, n))
+    # Ta có thể thấy rằng các dòng if không có ảnh hưởng đến số lần lặp của thuật toán
+    # Vậy nên ta có thể bỏ các câu if đó đi, khi đó thuật toán sẽ trở thành một dạng tính GCD nhưng tối ưu hơn
+    
+    # assert (n > 0) and (n & 1)
     a = a % n
     t = 1
     r = None  # Khởi tạo r
@@ -49,8 +53,8 @@ def find_DPQ(n):
         else:
             D = -D + 2
             
-    assert Jacobi(D, n)[0] == jacobi_symbol(D, n)
-    assert (1 - D) % 4 == 0 
+    # assert Jacobi(D, n)[0] == jacobi_symbol(D, n)
+    # assert (1 - D) % 4 == 0 
     P = 1
     Q = (1 - D) // 4
     return (D, P, Q), comparisons[0]
@@ -72,7 +76,7 @@ def Check_Perfect_Sqr(n: int):
         mid = (low + high) >> 1
         number = mid * mid
         if inc(comparisons) and number < n:
-            low = low + 1  
+            low = mid + 1  
         elif inc(comparisons) and number > n:
             high = mid - 1
         else:
@@ -112,7 +116,7 @@ def find_UVQ(n: int, P: int, Q: int, k: int):
 
     
 
-##TODO nhớ xóa assert sau khi chạy
+
 
 def Strong_Lucas_propable_prime(n):
     comparisons = [0]
@@ -179,16 +183,16 @@ def Baillie_PSW_Test(n):
 
     ## Sau khi kiểm tra xong thì chúng ta sẽ thực hiện 2 test chính
     # Miller - Rabin với base 2
-
-    result, comp = miller_rabin(n, 1, True)
+    
+    result, comp = Strong_Lucas_propable_prime(n)
     comparisons[0] += comp
     if (inc(comparisons)) and (not result):
         return False, comparisons[0]
-
     
-    # Lucas strong Propable prime test
-    result, comp = Strong_Lucas_propable_prime(n)
+    result, comp = miller_rabin(n, 1, True)
     comparisons[0] += comp
+    # Lucas strong Propable prime test
+    
     return result, comparisons[0]
 
 print(Baillie_PSW_Test(67601)[0])

@@ -33,7 +33,8 @@ def fermat_little(n):
     elif inc(comparisons) and n % 2 == 0:
         return False, comparisons[0]
     
-    a = random.randint(2, n)
+    a = random.randint(2, n - 1)
+    
     _gcd, comp1 = gcd(a, n)
     _pow, comp2 = pow_(a, n - 1, n)
 
