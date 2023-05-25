@@ -114,9 +114,6 @@ def find_UVQ(n: int, P: int, Q: int, k: int):
         Qk %= n
     return (U % n, V % n, Qk), comparisons[0]
 
-    
-
-
 
 def Strong_Lucas_propable_prime(n):
     comparisons = [0]
