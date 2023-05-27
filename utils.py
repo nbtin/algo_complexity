@@ -315,13 +315,15 @@ def Baillie_PSW_Test(n):
     ## Sau khi kiểm tra xong thì chúng ta sẽ thực hiện 2 test chính
     # Miller - Rabin với base 2
     
-    result, comp = Strong_Lucas_propable_prime(n)
-    comparisons[0] += comp
-    if (inc(comparisons)) and (not result):
-        return False, comparisons[0]
-    
     result, comp = miller_rabin(n, 1, True)
     comparisons[0] += comp
+
+    if (inc(comparisons)) and (not result):
+        return False, comparisons[0]
+
+    result, comp = Strong_Lucas_propable_prime(n)
+    comparisons[0] += comp
+
     # Lucas strong Propable prime test
     
     return result, comparisons[0]
