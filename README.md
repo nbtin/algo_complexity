@@ -1,4 +1,4 @@
-# Algorithm Complexity
+# Algorithmic Complexity
 
 Repo chứa các lab của môn `CSC14007` - Nhập môn Phân tích độ phức tạp thuật toán @ HCMUS.
 
